@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome!</title>
+</head>
+<body>
+    <h1 th:text="${host}">Hello World</h1>
+
+    <div>search</div>
+    <div>picture
+        <table border="2">
+            <tr th:each="picture : ${pictureList}">
+                <td th:text="${picture.id}">1</td>
+                <td th:text="${picture.title}">2</td>
+                <td><img th:src="@{'https://app-api.pixiv.net/'+${picture.image_urls.large}}"/>3</td>
+                <td th:text="${picture.created_time}">4</td>
+            </tr>
+        </table>
+
+    </div>
+    <div>toolBar</div>
+    <div>author</div>
+    <div>user</div>
+</body>
+</html>
