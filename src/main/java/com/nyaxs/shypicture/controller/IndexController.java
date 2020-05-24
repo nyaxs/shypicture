@@ -41,38 +41,25 @@ public class IndexController {
         restTemplate = new RestTemplate();
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES,false);
         String url = "https://api.imjad.cn/pixiv/v1/?type=rank&mode=daily&per_page=2&content=illust&date="+yesterday;
 
+        JsonNode resultRootNode = objectMapper.readTree(new URL(url));
+        //Json node tree , use node.at() to get target node
+        JsonNode worksNode = resultRootNode.at("/response").get(0).at("/works");
 
-        Map<String,Object> resultMap = objectMapper
-                .readValue(new URL(url) , new TypeReference<Map<String,Object>>(){});
+        String worksString = objectMapper.writeValueAsString(worksNode);
 
-
-        List<Object> responseList = (List<Object>) resultMap.get("response");
-
-
-        Map<String,Object> responseMap = (Map<String, Object>) responseList.get(0);
-
-
-        List<Object> worksList = (List<Object>) responseMap.get("works");
-
+        List<Object> worksList = objectMapper
+                .readValue(worksString, new TypeReference<List<Object>>(){});
 
         List<Picture> pictureList = new ArrayList<Picture>();
 
         for (Object obj:worksList) {
-
             Map<String,Object> workMap = (Map<String, Object>) obj;
-
             String workStr = JsonUtil.obj2String(workMap.get("work")) ;
-
             pictureList.add(objectMapper.readValue(workStr,Picture.class));
-
         };
-
-        for (Picture p :
-                pictureList) {
-            System.out.println("picture实例属性"+p.getId()+p.getTitle()+p.getImage_urls().get("large"));
-        }
         model.addAttribute("pictureList",pictureList);
         return "index";
     }

@@ -40,7 +40,29 @@ public class ShypictureApplicationTests {
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		String url = "https://api.imjad.cn/pixiv/v1/?type=rank&mode=daily&per_page=2&content=illust&date="+yesterday;
 
+		JsonNode resultRootNode = objectMapper.readTree(new URL(url));
 
+		System.out.println(resultRootNode);
+
+		JsonNode worksNode = resultRootNode.at("/response").get(0).at("/works");
+
+		String worksString = objectMapper.writeValueAsString(worksNode);
+
+		List<Object> worksList = objectMapper
+				.readValue(worksString, new TypeReference<List<Object>>(){});
+
+		List<Picture> pictureList = new ArrayList<Picture>();
+
+		for (Object obj:worksList) {
+
+			Map<String,Object> workMap = (Map<String, Object>) obj;
+
+			String workStr = JsonUtil.obj2String(workMap.get("work")) ;
+			pictureList.add(objectMapper.readValue(workStr,Picture.class));
+		};
+
+
+		/*
 		Map<String,Object> resultMap = objectMapper
 				.readValue(new URL(url) , new TypeReference<Map<String,Object>>(){});
 
@@ -78,6 +100,8 @@ public class ShypictureApplicationTests {
 			System.out.println("picture实例属性"+p.getId()+p.getTitle()+p.getImage_urls().get("large"));
 		}
 
+
+		 */
 
 
 
