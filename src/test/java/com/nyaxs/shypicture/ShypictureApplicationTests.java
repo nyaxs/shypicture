@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nyaxs.shypicture.bean.Picture;
 import com.nyaxs.shypicture.bean.SearchCondition;
+import com.nyaxs.shypicture.controller.PictureController;
+import com.nyaxs.shypicture.service.PictureMapper;
 import com.nyaxs.shypicture.util.DownloadUtil;
 import com.nyaxs.shypicture.util.JsonUtil;
 import okhttp3.OkHttpClient;
@@ -32,6 +34,27 @@ import java.util.Map;
 @SpringBootTest
 public class ShypictureApplicationTests {
 
+	@Autowired
+	private PictureMapper pictureMapper;
+
+	@Test
+	public void test1() throws Exception {
+
+		SearchCondition condition2 = new SearchCondition();
+		PictureController pictureController = new PictureController();
+		condition2.setDate("2020-05-15");
+		condition2.setRankPerPage(2);
+		condition2.setRankMode("monthly");
+		List<Picture> pictures = pictureController.getPictureList(condition2);
+
+		for (Picture p :
+				pictures) {
+			pictureMapper.insertPicture(p.getId(), p.getImage_urls().get("large"), 0);
+		}
+
+		pictureMapper.deletePictureById(1233);
+
+	}
 
 	@Test
 	public void test() throws Exception {
@@ -45,64 +68,9 @@ public class ShypictureApplicationTests {
 		System.out.println("###################" + JsonUtil.obj2String(condition1)
 				+ "###################" + JsonUtil.obj2String(condition2));
 
-		List<Picture> pictureList1 = getAndDownPictureList(condition1);
-		List<Picture> pictureList2 = getAndDownPictureList(condition2);
-		System.out.println("###################" + pictureList1 + "###################" + pictureList2);
-		for (Picture picture :
-				pictureList1) {
-			System.out.println(picture.getId() + "##");
-		}
-		System.out.println("####################condition1和condition2的list id 分界线");
-		for (Picture picture :
-				pictureList2) {
-			System.out.println(picture.getId() + "##");
-		}
-
 	}
 
 
-	LocalDate today = null;
-	LocalDate twoDaysAgo = null;
 
-	public List<Picture> getAndDownPictureList(SearchCondition condition) throws Exception {
-		today = LocalDate.now();
-		twoDaysAgo = today.minusDays(2);
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
-		String urlDaily = "https://api.imjad.cn/pixiv/v1/" +
-				"?type=" + condition.getType() +
-				"&mode=" + condition.getRankMode() +
-				"&per_page=" + condition.getRankPerPage() +
-				"&content=" + condition.getContent() +
-				"&date=" + condition.getDate();
-		JsonNode resultRootNode = objectMapper.readTree(new URL(urlDaily));
-		//Json node tree , use node.at() to get target node
-		JsonNode worksNode = resultRootNode.at("/response").get(0).at("/works");
 
-		String worksString = objectMapper.writeValueAsString(worksNode);
-
-		List<Object> worksList = objectMapper
-				.readValue(worksString, new TypeReference<List<Object>>() {
-				});
-
-		List<Picture> pictureList = new ArrayList<Picture>();
-		//保存pictureList的大图下载链接
-		//List<String>  pictureImageLargeUrls = new ArrayList<String>();
-
-		for (Object obj : worksList) {
-			Map<String, Object> workMap = (Map<String, Object>) obj;
-			String workStr = JsonUtil.obj2String(workMap.get("work"));
-			Picture picture = objectMapper.readValue(workStr, Picture.class);
-			pictureList.add(picture);
-			//pictureImageLargeUrls.add(picture.getImage_urls().get("large"));
-		}
-		;
-
-		System.out.println("###########pictureList: " + pictureList.get(0).getImage_urls().get("large"));
-
-		DownloadUtil.get().downloadPicturesByList(pictureList);
-
-		return pictureList;
-	}
 }

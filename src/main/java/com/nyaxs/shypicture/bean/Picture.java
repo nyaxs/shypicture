@@ -3,13 +3,16 @@ package com.nyaxs.shypicture.bean;
 import java.util.List;
 import java.util.Map;
 
+
 public class Picture {
 
     private int id;
+    private String largeUrl;
+    private int ageLimit;
     private String title;
     private String caption;
     private List<String> tags;
-    private Map<String,String> image_urls;
+    private Map<String, String> image_urls;
     private String tools;
     private int width;
     private int height;
@@ -26,36 +29,12 @@ public class Picture {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getLargeUrl() {
+        return largeUrl;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getCaption() {
-        return caption;
-    }
-
-    public void setCaption(String caption) {
-        this.caption = caption;
-    }
-
-    public List<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<String> tags) {
-        this.tags = tags;
-    }
-
-    public Map<String, String> getImage_urls() {
-        return image_urls;
-    }
-
-    public void setImage_urls(Map<String, String> image_urls) {
-        this.image_urls = image_urls;
+    public void setLargeUrl(String largeUrl) {
+        this.largeUrl = largeUrl;
     }
 
     public String getTools() {
@@ -114,5 +93,43 @@ public class Picture {
         this.is_liked = is_liked;
     }
 
+    public int getAgeLimit() {
+        return ageLimit;
+    }
 
+    public void setAgeLimit(int ageLimit) {
+        this.ageLimit = ageLimit;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getCaption() {
+        return caption;
+    }
+
+    public void setCaption(String caption) {
+        this.caption = caption;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public Map<String, String> getImage_urls() {
+        return image_urls;
+    }
+
+    public void setImage_urls(Map<String, String> image_urls) {
+        this.image_urls = image_urls;
+    }
 }
