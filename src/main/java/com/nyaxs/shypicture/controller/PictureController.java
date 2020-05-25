@@ -35,9 +35,16 @@ public class PictureController {
     LocalDate today = null;
     LocalDate twoDaysAgo = null;
 
-    public Picture getPictureById(SearchCondition condition) {
-        String url = "";
+    public Picture getPictureById(SearchCondition condition) throws Exception {
+        String url = "https://api.imjad.cn/pixiv/v1/?type="
+                + condition.getType()
+                + "&id=" + condition.getPictureId();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+
         Picture p = new Picture();
+        p = JsonUtil.string2Obj(objectMapper.readTree(new URL(url)).get(0).asText(), Picture.class);
         return p;
     }
 
