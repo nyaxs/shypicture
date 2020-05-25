@@ -6,20 +6,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nyaxs.shypicture.bean.Picture;
 import com.nyaxs.shypicture.util.JsonUtil;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
@@ -27,30 +24,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Controller
-public class IndexController {
+public class PictureController {
 
-    RestTemplate restTemplate = null;
+    private final OkHttpClient client = new OkHttpClient();
+
     LocalDate today = null;
     LocalDate twoDaysAgo = null;
 
-    //处理根路径请求
-    @GetMapping("/")
-    public String index(ModelMap map){
-        map.addAttribute("host","http://localhost:8080/");
-        return "index";
-    }
-
-    @GetMapping("/daily")
-    public String everyday(Model model) throws Exception {
+    public void getDailyPictureList() throws Exception {
         today = LocalDate.now();
         twoDaysAgo = today.minusDays(2);
-        restTemplate = new RestTemplate();
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES,false);
         String url = "https://api.imjad.cn/pixiv/v1/" +
-                "?type=rank&mode=daily&per_page=2&content=illust&date="+twoDaysAgo;
+                "?type=rank&mode=daily&per_page=5&content=illust&date="+twoDaysAgo;
 
         JsonNode resultRootNode = objectMapper.readTree(new URL(url));
         //Json node tree , use node.at() to get target node
@@ -62,13 +50,49 @@ public class IndexController {
                 .readValue(worksString, new TypeReference<List<Object>>(){});
 
         List<Picture> pictureList = new ArrayList<Picture>();
+        //保存pictureList的大图下载链接
+        //List<String>  pictureImageLargeUrls = new ArrayList<String>();
 
         for (Object obj:worksList) {
             Map<String,Object> workMap = (Map<String, Object>) obj;
             String workStr = JsonUtil.obj2String(workMap.get("work")) ;
-            pictureList.add(objectMapper.readValue(workStr,Picture.class));
+            Picture picture = objectMapper.readValue(workStr,Picture.class);
+            pictureList.add(picture);
+            //pictureImageLargeUrls.add(picture.getImage_urls().get("large"));
         };
-        model.addAttribute("pictureList",pictureList);
+
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        File file = null;
+        byte[] bytes = null;
+
+
+        for (int i = 0; i < pictureList.size(); i++){
+            Picture picture1 = pictureList.get(i);
+            Request request = new Request.Builder()
+                    .header("referer","https://app-api.pixiv.net/")
+                    .url(picture1.getImage_urls().get("large"))
+                    .build();
+            try(Response response = client.newCall(request).execute()){
+                if(!response.isSuccessful()){
+                    throw new IOException("Unexpected Code " + response);
+                }
+                ResponseBody responseBody = response.body();
+
+                file = new File("D:\\springbootProject\\resource\\pictures\\"
+                        +picture1.getId()+".jpg");
+                long total = responseBody.contentLength();
+                inputStream = responseBody.byteStream();
+                outputStream = new FileOutputStream(file);
+                bytes = new byte[1024 * 8];
+                int length = 0;
+                while ((length = inputStream.read(bytes)) != -1){
+                    outputStream.write(bytes,0,length);
+                }
+                outputStream.flush();
+                outputStream.close();
+            }
+        }
 
         String getPictureLarge1 = pictureList.get(0).getImage_urls().get("large");
         HttpHeaders headers = new HttpHeaders();
@@ -92,21 +116,14 @@ public class IndexController {
         outputStream2.write(picBody2);
         outputStream2.flush();
         outputStream2.close();
-        return "index";
     }
 
-    @GetMapping("/weekly")
-    public int weekly(){
-
-        restTemplate = new RestTemplate();
-        return 0;
+    public void getWeeklyPictureList(){
 
     }
 
+    public void getMonthlyPictureList(){
 
-    public int randomPic(){
-        return 0;
     }
-
 
 }

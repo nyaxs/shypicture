@@ -13,7 +13,7 @@
             <tr th:each="picture : ${pictureList}">
                 <td th:text="${picture.id}">1</td>
                 <td th:text="${picture.title}">2</td>
-                <td><img th:src="@{'https://app-api.pixiv.net/'+${picture.image_urls.large}}"/>3</td>
+                <td><img th:src="@{http://127.0.0.1:8080/picture/${picture.id}.jpg}"/>3</td>
                 <td th:text="${picture.created_time}">4</td>
             </tr>
         </table>
