@@ -5,7 +5,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nyaxs.shypicture.bean.Picture;
+import com.nyaxs.shypicture.bean.SearchCondition;
+import com.nyaxs.shypicture.service.PictureMapper;
+import com.nyaxs.shypicture.util.DownloadUtil;
 import com.nyaxs.shypicture.util.JsonUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
@@ -30,68 +35,51 @@ import java.util.Map;
 @Controller
 public class IndexController {
 
+    @Autowired
+    private PictureMapper pictureMapper;
+
     RestTemplate restTemplate = null;
     LocalDate today = null;
     LocalDate twoDaysAgo = null;
 
+
+    public List<Picture> getAndDownPicture(SearchCondition condition) throws Exception {
+        PictureController pictureController = new PictureController();
+        List<Picture> pictureList = pictureController.getPictureList(condition);
+        DownloadUtil.get().downloadPicturesByList(pictureList);
+        pictureMapper.insertManyPictures(pictureList);
+        return pictureList;
+    }
+
     //处理根路径请求
     @GetMapping("/")
-    public String index(ModelMap map){
-        map.addAttribute("host","http://localhost:8080/");
+    public String index() {
+        return "welcome";
+    }
+
+    @GetMapping("/index")
+    public String random(Model model) throws Exception {
+        PictureController pictureController = new PictureController();
+        SearchCondition condition1 = new SearchCondition();
+        System.out.println("########" + condition1 + JsonUtil.obj2String(condition1));
+
+        int picNum = 2;
+        //List<Picture> pictureList = pictureMapper.findRandomPicture(picNum);
+        List<Picture> pictureList = pictureController.getPictureList(condition1);
+        DownloadUtil.get().downloadPicturesByList(pictureList);
+        pictureMapper.insertManyPictures(pictureList);
+        model.addAttribute("pictureList", pictureList);
         return "index";
     }
 
     @GetMapping("/daily")
     public String everyday(Model model) throws Exception {
-        today = LocalDate.now();
-        twoDaysAgo = today.minusDays(2);
-        restTemplate = new RestTemplate();
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES,false);
-        String url = "https://api.imjad.cn/pixiv/v1/" +
-                "?type=rank&mode=daily&per_page=2&content=illust&date="+twoDaysAgo;
-
-        JsonNode resultRootNode = objectMapper.readTree(new URL(url));
-        //Json node tree , use node.at() to get target node
-        JsonNode worksNode = resultRootNode.at("/response").get(0).at("/works");
-
-        String worksString = objectMapper.writeValueAsString(worksNode);
-
-        List<Object> worksList = objectMapper
-                .readValue(worksString, new TypeReference<List<Object>>(){});
-
-        List<Picture> pictureList = new ArrayList<Picture>();
-
-        for (Object obj:worksList) {
-            Map<String,Object> workMap = (Map<String, Object>) obj;
-            String workStr = JsonUtil.obj2String(workMap.get("work")) ;
-            pictureList.add(objectMapper.readValue(workStr,Picture.class));
-        };
-        model.addAttribute("pictureList",pictureList);
-
-        String getPictureLarge1 = pictureList.get(0).getImage_urls().get("large");
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("referer","https://app-api.pixiv.net/");
-        ResponseEntity<byte[]> entity = restTemplate
-                .exchange(getPictureLarge1, HttpMethod.GET,new HttpEntity<>(headers),byte[].class);
-        byte[] picBody1 = entity.getBody();
-        OutputStream outputStream =
-                new FileOutputStream(new File("D:\\springbootProject\\resource\\pictures\\"+pictureList.get(0).getId()+".jpg"));
-        outputStream.write(picBody1);
-        outputStream.flush();
-        outputStream.close();
-
-        String getPictureLarge2 = pictureList.get(1).getImage_urls().get("large");
-
-        ResponseEntity<byte[]> entity2 = restTemplate
-                .exchange(getPictureLarge2, HttpMethod.GET,new HttpEntity<>(headers),byte[].class);
-        byte[] picBody2 = entity.getBody();
-        OutputStream outputStream2 =
-                new FileOutputStream(new File("D:\\springbootProject\\resource\\pictures\\"+pictureList.get(1).getId()+".jpg"));
-        outputStream2.write(picBody2);
-        outputStream2.flush();
-        outputStream2.close();
+        SearchCondition condition = new SearchCondition();
+        condition.setRankMode("daily");
+        condition.setRankPerPage(3);
+        condition.setDate("2020-03-03");
+        List<Picture> pictureList = getAndDownPicture(condition);
+        model.addAttribute("pictureList", pictureList);
         return "index";
     }
 

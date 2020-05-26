@@ -3,24 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <title>Welcome!</title>
+
+    <style type="text/css">
+        body {
+            background-color: #fff;
+            color: #353833;
+            font-family: dejavu sans,Arial,Helvetica,sans-serif;
+            font-size: 14px;
+            margin: 0;
+        }
+        div {
+            display: block;
+        }
+        ul {
+            display: block;
+            list-style-type: disc;
+            margin-block-start: 1em;
+            margin-block-end: 1em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            padding-inline-start: 40px;
+            list-style-type: disc;
+        }
+
+
+        .topNav {
+            background-color: #4d7a97;
+            color: #fff;
+            float: left;
+            padding: 0;
+            width: 100%;
+            clear: right;
+            height: 2.8em;
+            padding-top: 10px;
+            overflow: hidden;
+            font-size: 12px;
+        }
+        ul.navList, ul.subNavList {
+            float: left;
+            margin: 0 25px 0 0;
+            padding: 0;
+        }
+        ul.navList li {
+            list-style: none;
+            float: left;
+            padding: 5px 6px;
+            text-transform: uppercase;
+        }
+        li {
+            display: list-item;
+            text-align: -webkit-match-parent;
+        }
+
+        a:-webkit-any-link {
+            color: -webkit-link;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        a:link, a:visited {
+            text-decoration: none;
+            color: #4a6782;
+        }
+        .topNav a:link, .topNav a:active, .topNav a:visited, .bottomNav a:link, .bottomNav a:active, .bottomNav a:visited {
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .aboutNyaxs {
+            float: right;
+            padding: 0 21px;
+            font-size: 11px;
+            z-index: 200;
+            margin-top: -9px;
+        }
+
+
+
+    </style>
 </head>
 <body>
-    <h1 th:text="${host}">Hello World</h1>
+<div class="topNav">
 
-    <div>search</div>
-    <div>picture
-        <table border="2">
-            <tr th:each="picture : ${pictureList}">
-                <td th:text="${picture.id}">1</td>
-                <td th:text="${picture.title}">2</td>
-                <td><img th:src="@{http://127.0.0.1:8080/picture/${picture.id}.jpg}"/>3</td>
-                <td th:text="${picture.created_time}">4</td>
-            </tr>
-        </table>
+    <ul class="navList" title="Navigation">
+        <li><a href="/random">随机</a></li>
+        <li><a href="/daily">每日</a></li>
+        <li class="/weekly">每周</li>
+        <li><a href="/monthly">每月</a></li>
+        <li><a href="/search">搜索</a></li>
+        <li><a href="/hotTags">热门标签</a></li>
+        <li><a href="/r18">让我康康!</a></li>
+    </ul>
+    <div class="aboutNyaxs">Nyaxs</div>
+</div>
 
-    </div>
-    <div>toolBar</div>
-    <div>author</div>
-    <div>user</div>
+<div>
+    <table border="2">
+        <tr th:each="picture : ${pictureList}">
+            <td th:text="${picture.id}">1</td>
+            <td th:text="${picture.ageLimit}">1</td>
+            <td><img th:src="@{| ${picture.id}.jpg|}" src=""/>3</td>
+        </tr>
+    </table>
+
+</div>
 </body>
 </html>

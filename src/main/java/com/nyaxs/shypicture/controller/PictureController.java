@@ -79,6 +79,7 @@ public class PictureController {
             Map<String, Object> workMap = (Map<String, Object>) obj;
             String workStr = JsonUtil.obj2String(workMap.get("work"));
             Picture picture = objectMapper.readValue(workStr, Picture.class);
+            picture.setLargeUrl(picture.getImage_urls().get("large"));
             pictureList.add(picture);
             //pictureImageLargeUrls.add(picture.getImage_urls().get("large"));
         }

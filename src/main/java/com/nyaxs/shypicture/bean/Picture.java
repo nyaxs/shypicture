@@ -21,6 +21,10 @@ public class Picture {
     private User user;
     private Boolean is_liked;
 
+    public Picture() {
+        this.ageLimit = 0;
+    }
+
     public int getId() {
         return id;
     }
