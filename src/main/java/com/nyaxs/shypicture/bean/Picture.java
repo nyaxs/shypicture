@@ -18,6 +18,7 @@ public class Picture {
     private int height;
     private String age_limit;
     private String created_time;
+
     private User user;
     private Boolean is_liked;
 

@@ -6,21 +6,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nyaxs.shypicture.bean.Picture;
 import com.nyaxs.shypicture.bean.SearchCondition;
+import com.nyaxs.shypicture.bean.jsonpojo.picture.ResponseItem;
+import com.nyaxs.shypicture.bean.jsonpojo.picture.ResponsePicture;
 import com.nyaxs.shypicture.util.DownloadUtil;
 import com.nyaxs.shypicture.util.JsonUtil;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -35,17 +26,18 @@ public class PictureController {
     LocalDate today = null;
     LocalDate twoDaysAgo = null;
 
-    public Picture getPictureById(SearchCondition condition) throws Exception {
-        String url = "https://api.imjad.cn/pixiv/v1/?type="
-                + condition.getType()
-                + "&id=" + condition.getPictureId();
+    public ResponseItem getPictureById(int id) throws Exception {
+        String url = "https://api.imjad.cn/pixiv/v1/?type=illust"
+                + "&id=" + id;
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
 
-        Picture p = new Picture();
-        p = JsonUtil.string2Obj(objectMapper.readTree(new URL(url)).get(0).asText(), Picture.class);
-        return p;
+        ResponsePicture responsePicture = objectMapper.readValue(new URL(url), ResponsePicture.class);
+        ResponseItem item = responsePicture.getResponse().get(0);
+
+
+        return item;
     }
 
     public List<Picture> getPictureList(SearchCondition condition) throws Exception {

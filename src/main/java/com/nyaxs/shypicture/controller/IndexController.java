@@ -1,36 +1,21 @@
 package com.nyaxs.shypicture.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nyaxs.shypicture.bean.Picture;
 import com.nyaxs.shypicture.bean.SearchCondition;
+import com.nyaxs.shypicture.bean.jsonpojo.picture.FavoritedCount;
+import com.nyaxs.shypicture.bean.jsonpojo.picture.ResponseItem;
+import com.nyaxs.shypicture.bean.jsonpojo.picture.Stats;
+import com.nyaxs.shypicture.bean.jsonpojo.picture.User;
 import com.nyaxs.shypicture.service.PictureMapper;
 import com.nyaxs.shypicture.util.DownloadUtil;
-import com.nyaxs.shypicture.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class IndexController {
@@ -60,15 +45,27 @@ public class IndexController {
     @GetMapping("/index")
     public String random(Model model) throws Exception {
         PictureController pictureController = new PictureController();
-        SearchCondition condition1 = new SearchCondition();
-        System.out.println("########" + condition1 + JsonUtil.obj2String(condition1));
+        List<Picture> pictures = pictureMapper.findRandomPicture(1);
+        Picture picture = pictures.get(0);
 
-        int picNum = 2;
-        //List<Picture> pictureList = pictureMapper.findRandomPicture(picNum);
-        List<Picture> pictureList = pictureController.getPictureList(condition1);
-        DownloadUtil.get().downloadPicturesByList(pictureList);
-        pictureMapper.insertManyPictures(pictureList);
-        model.addAttribute("pictureList", pictureList);
+        ResponseItem item = pictureController.getPictureById(picture.getId());
+        User user = item.getUser();
+        Stats stats = item.getStats();
+        FavoritedCount favoritedCount = stats.getFavoritedCount();
+        List<String> tags = item.getTags();
+        model.addAttribute("tags", tags);
+        model.addAttribute("picture", item);
+        model.addAttribute("author", user);
+        model.addAttribute("stats", stats);
+        model.addAttribute("favoritedCount", favoritedCount);
+        System.out.println("item:" + item.toString());
+        System.out.println("user:" + user.toString());
+
+        //DownloadUtil.get().downloadPictureById(picture);
+        //List<Picture> pictureList = pictureController.getPictureList(condition1);
+        //DownloadUtil.get().downloadPicturesByList(pictureList);
+        //pictureMapper.insertManyPictures(pictureList);
+        //model.addAttribute("pictureList", pictureList);
         return "index";
     }
 
@@ -86,7 +83,6 @@ public class IndexController {
     @GetMapping("/weekly")
     public int weekly(){
 
-        restTemplate = new RestTemplate();
         return 0;
 
     }

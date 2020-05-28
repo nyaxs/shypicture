@@ -3,110 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <title>Welcome!</title>
-
-    <style type="text/css">
-        body {
-            background-color: #fff;
-            color: #353833;
-            font-family: dejavu sans,Arial,Helvetica,sans-serif;
-            font-size: 14px;
-            margin: 0;
-        }
-        div {
-            display: block;
-        }
-        ul {
-            display: block;
-            list-style-type: disc;
-            margin-block-start: 1em;
-            margin-block-end: 1em;
-            margin-inline-start: 0px;
-            margin-inline-end: 0px;
-            padding-inline-start: 40px;
-            list-style-type: disc;
-        }
-
-
-        .topNav {
-            background-color: #4d7a97;
-            color: #fff;
-            float: left;
-            padding: 0;
-            width: 100%;
-            clear: right;
-            height: 2.8em;
-            padding-top: 10px;
-            overflow: hidden;
-            font-size: 12px;
-        }
-        ul.navList, ul.subNavList {
-            float: left;
-            margin: 0 25px 0 0;
-            padding: 0;
-        }
-        ul.navList li {
-            list-style: none;
-            float: left;
-            padding: 5px 6px;
-            text-transform: uppercase;
-        }
-        li {
-            display: list-item;
-            text-align: -webkit-match-parent;
-        }
-
-        a:-webkit-any-link {
-            color: -webkit-link;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
-        a:link, a:visited {
-            text-decoration: none;
-            color: #4a6782;
-        }
-        .topNav a:link, .topNav a:active, .topNav a:visited, .bottomNav a:link, .bottomNav a:active, .bottomNav a:visited {
-            color: #fff;
-            text-decoration: none;
-            text-transform: uppercase;
-        }
-
-        .aboutNyaxs {
-            float: right;
-            padding: 0 21px;
-            font-size: 11px;
-            z-index: 200;
-            margin-top: -9px;
-        }
-
-
-
-    </style>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}">
 </head>
 <body>
-<div class="topNav">
+<div class="all">
+    <div class="topNav">
 
-    <ul class="navList" title="Navigation">
-        <li><a href="/random">随机</a></li>
-        <li><a href="/daily">每日</a></li>
-        <li class="/weekly">每周</li>
-        <li><a href="/monthly">每月</a></li>
-        <li><a href="/search">搜索</a></li>
-        <li><a href="/hotTags">热门标签</a></li>
-        <li><a href="/r18">让我康康!</a></li>
-    </ul>
-    <div class="aboutNyaxs">Nyaxs</div>
-</div>
+        <ul class="navList" title="Navigation">
+            <li><a href="/random">随机</a></li>
+            <li><a href="/daily">每日</a></li>
+            <li class="/weekly">每周</li>
+            <li><a href="/monthly">每月</a></li>
+            <li><a href="/hotTags">热门标签</a></li>
+            <li><a href="/r18">让我康康!</a></li>
+            <li class="searchLi">
+                <form action="/search" class="searchForm">
+                    <input id="searchBox" name="q" type="search" value="" placeholder="搜索关键字" aria-label="搜索">
+                </form>
+                <div class="aboutNyaxs">Nyaxs</div>
+            </li>
 
-<div>
-    <table border="2">
-        <tr th:each="picture : ${pictureList}">
-            <td th:text="${picture.id}">1</td>
-            <td th:text="${picture.ageLimit}">1</td>
-            <td><img th:src="@{| ${picture.id}.jpg|}" src=""/>3</td>
-        </tr>
-    </table>
+        </ul>
 
+    </div>
+
+    <div class="content">
+
+        <div class="pictureShow">
+            <div class="pictureArea"><img width="706px" th:src="@{|${picture.id}.jpg|}" src=""/></div>
+        </div>
+
+
+        <div class="pictureInfo">
+            <div>
+                <ul class="picInfoList">
+                    <li><a th:href="@{/welcome}" th:text="|作者名字:${author.name}|">userName</a></li>
+                    <li><a th:href="@{/welcome}" th:text="|作者ID:${author.id}|">userId</a></li>
+                    <li><a th:href="@{/welcome}" th:text="|标题:${picture.title}">pictureTitle</a></li>
+                    <li><a th:href="@{/welcome}" th:text="|作品ID:${picture.id}|">pictureId</a></li>
+                    <li><a th:href="@{/welcome}" th:text="|投稿时间:${picture.createdTime}|">pictureTime</a></li>
+                    <li><a th:href="@{/welcome}" th:text="|赞:${stats.scoredCount}|">zanCount</a></li>
+                    <li><a th:href="@{/welcome}" th:text="|收藏:${favoritedCount.jsonMemberPublic}|">favoriteCount</a>
+                    </li>
+                    <li><a th:href="@{/welcome}" th:text="|浏览:${stats.viewsCount}|">viewCount</a></li>
+                    <li><a th:href="@{/welcome}" th:each="tag :${picture.tags}"
+                           th:text="'#'+${tag}+'&nbsp;&nbsp;'">tag</a></li>
+                </ul>
+                <!--
+                 <li><a th:href="@{/welcome}" th:text="作者昵称${picture.user.name}">authorName</a></li>
+                <li><a th:href="@{/welcome}" th:text="作者ID${picture.user.id}">authorId</a></li>
+                <li>
+                    <a th:href="@{/pictureTags}">pictureTags:</a>
+                    <ul th:each="tag :${picture.tags}">
+                        <li><a th:href="@{/pictureTag}" th:text="|#|${tag}">pictureTag</a></li>
+                    </ul>
+                </li>
+                <li th:text="Zan-2333">pictureZan</li>
+                <li th:text="collect-2333">pictureCollect</li>
+                <li th:text="view2333">pictureView</li>
+                <li th:text="|createTime|${picture.createdTime}">pictureCreateTime</li>
+                -->
+            </div>
+        </div>
+
+
+    </div>
 </div>
 </body>
 </html>

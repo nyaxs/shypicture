@@ -92,7 +92,7 @@ public class DownloadUtil {
                 .build();
         Request request = new Request.Builder()
                 .header("referer", "https://app-api.pixiv.net/")
-                .url(picture1.getImage_urls().get("large"))
+                .url(picture1.getLargeUrl())
                 .build();
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {

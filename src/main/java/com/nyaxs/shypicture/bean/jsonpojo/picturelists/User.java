@@ -1,27 +1,38 @@
-package com.nyaxs.shypicture.bean;
+package com.nyaxs.shypicture.bean.jsonpojo.picturelists;
 
-import com.nyaxs.shypicture.bean.jsonpojo.picturelists.ProfileImageUrls;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class User {
+
+    @JsonProperty("is_premium")
     private Object isPremium;
 
+    @JsonProperty("stats")
     private Object stats;
 
+    @JsonProperty("profile")
     private Object profile;
 
+    @JsonProperty("name")
     private String name;
 
+    @JsonProperty("profile_image_urls")
     private ProfileImageUrls profileImageUrls;
 
+    @JsonProperty("id")
     private int id;
 
-    private boolean isFollowing;
+    @JsonProperty("is_following")
+    private Object isFollowing;
 
-    private boolean isFriend;
+    @JsonProperty("is_friend")
+    private Object isFriend;
 
+    @JsonProperty("account")
     private String account;
 
-    private boolean isFollower;
+    @JsonProperty("is_follower")
+    private Object isFollower;
 
     public void setIsPremium(Object isPremium) {
         this.isPremium = isPremium;
@@ -71,19 +82,19 @@ public class User {
         return id;
     }
 
-    public void setIsFollowing(boolean isFollowing) {
+    public void setIsFollowing(Object isFollowing) {
         this.isFollowing = isFollowing;
     }
 
-    public boolean isIsFollowing() {
+    public Object getIsFollowing() {
         return isFollowing;
     }
 
-    public void setIsFriend(boolean isFriend) {
+    public void setIsFriend(Object isFriend) {
         this.isFriend = isFriend;
     }
 
-    public boolean isIsFriend() {
+    public Object getIsFriend() {
         return isFriend;
     }
 
@@ -95,11 +106,11 @@ public class User {
         return account;
     }
 
-    public void setIsFollower(boolean isFollower) {
+    public void setIsFollower(Object isFollower) {
         this.isFollower = isFollower;
     }
 
-    public boolean isIsFollower() {
+    public Object getIsFollower() {
         return isFollower;
     }
 

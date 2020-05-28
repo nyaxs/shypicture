@@ -1,26 +1,37 @@
-package com.nyaxs.shypicture.bean;
+package com.nyaxs.shypicture.bean.jsonpojo.picture;
 
-import com.nyaxs.shypicture.bean.jsonpojo.picturelists.ProfileImageUrls;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class User {
+
+    @JsonProperty("is_premium")
     private Object isPremium;
 
+    @JsonProperty("stats")
     private Object stats;
 
+    @JsonProperty("profile")
     private Object profile;
 
+    @JsonProperty("name")
     private String name;
 
+    @JsonProperty("profile_image_urls")
     private ProfileImageUrls profileImageUrls;
 
+    @JsonProperty("id")
     private int id;
 
+    @JsonProperty("is_following")
     private boolean isFollowing;
 
+    @JsonProperty("is_friend")
     private boolean isFriend;
 
+    @JsonProperty("account")
     private String account;
 
+    @JsonProperty("is_follower")
     private boolean isFollower;
 
     public void setIsPremium(Object isPremium) {
