@@ -8,9 +8,12 @@ import com.nyaxs.shypicture.bean.Picture;
 import com.nyaxs.shypicture.bean.SearchCondition;
 import com.nyaxs.shypicture.bean.jsonpojo.picture.ResponseItem;
 import com.nyaxs.shypicture.bean.jsonpojo.picture.ResponsePicture;
+import com.nyaxs.shypicture.bean.jsonpojo.picturelists.ResponsePictures;
 import com.nyaxs.shypicture.util.DownloadUtil;
 import com.nyaxs.shypicture.util.JsonUtil;
 import okhttp3.OkHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -21,7 +24,7 @@ import java.util.Map;
 public class PictureController {
 
     private final OkHttpClient client = new OkHttpClient();
-
+    private static final Logger logger = LoggerFactory.getLogger(PictureController.class);
 
     LocalDate today = null;
     LocalDate twoDaysAgo = null;
@@ -38,6 +41,25 @@ public class PictureController {
 
 
         return item;
+    }
+
+    public ResponsePictures getPictureListWithJsonPojo(SearchCondition condition) throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+        String url = "https://api.imjad.cn/pixiv/v1/" +
+                "?type=" + condition.getType() +
+                "&mode=" + condition.getRankMode() +
+                "&per_page=" + condition.getRankPerPage() +
+                "&content=" + condition.getContent() +
+                "&date=" + condition.getDate();
+
+        logger.info("使用json2pojo的对象来接收pictures信息");
+
+        ResponsePictures responsePictures = objectMapper.readValue(new URL(url), ResponsePictures.class);
+
+
+        return responsePictures;
     }
 
     public List<Picture> getPictureList(SearchCondition condition) throws Exception {

@@ -1,6 +1,7 @@
 package com.nyaxs.shypicture.service;
 
 import com.nyaxs.shypicture.bean.Picture;
+import com.nyaxs.shypicture.bean.PictureData;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -15,6 +16,14 @@ public interface PictureMapper {
             "</foreach>" +
             "</script>")
     int insertManyPictures(@Param("list") List<Picture> pictureList);
+
+    @Insert("<script>" +
+            "INSERT IGNORE INTO picture(id,largeUrl,ageLimit) VALUES" +
+            "<foreach collection=\"list\" item=\"item1\" index=\"index\"  separator=\",\">" +
+            "(#{item1.pictureId},#{item1.largeUrl},#{item1.ageLimit})" +
+            "</foreach>" +
+            "</script>")
+    int insertManyPicturesByPictureData(@Param("list") List<PictureData> pictureDataList);
 
     //获取指定数量随机图片
     @Select("select * from PICTURE order by rand() limit #{num}")
