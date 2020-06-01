@@ -1,4 +1,4 @@
-package com.nyaxs.shypicture.service;
+package com.nyaxs.shypicture.mapper;
 
 import com.nyaxs.shypicture.bean.Picture;
 import com.nyaxs.shypicture.bean.PictureData;

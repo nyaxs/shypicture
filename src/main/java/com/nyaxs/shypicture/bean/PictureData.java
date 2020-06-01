@@ -1,6 +1,5 @@
 package com.nyaxs.shypicture.bean;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,7 +14,6 @@ import java.util.List;
  */
 @Slf4j
 @Data
-@Builder
 public class PictureData {
     private int pictureId;
     private String pictureTitle;

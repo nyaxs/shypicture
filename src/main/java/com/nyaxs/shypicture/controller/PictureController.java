@@ -9,11 +9,14 @@ import com.nyaxs.shypicture.bean.SearchCondition;
 import com.nyaxs.shypicture.bean.jsonpojo.picture.ResponseItem;
 import com.nyaxs.shypicture.bean.jsonpojo.picture.ResponsePicture;
 import com.nyaxs.shypicture.bean.jsonpojo.picturelists.ResponsePictures;
-import com.nyaxs.shypicture.util.DownloadUtil;
+import com.nyaxs.shypicture.util.AsyncDownload;
 import com.nyaxs.shypicture.util.JsonUtil;
 import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -21,13 +24,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
+@Controller
 public class PictureController {
 
     private final OkHttpClient client = new OkHttpClient();
     private static final Logger logger = LoggerFactory.getLogger(PictureController.class);
 
+    @Autowired
+    private AsyncDownload asyncDownload;
+
     LocalDate today = null;
     LocalDate twoDaysAgo = null;
+
+    @GetMapping("/dotask")
+    public String doTask() throws Exception {
+        asyncDownload.doTaskOne();
+        asyncDownload.doTaskTwo();
+        asyncDownload.doTaskThree();
+        return "welcome";
+    }
 
     public ResponseItem getPictureById(int id) throws Exception {
         String url = "https://api.imjad.cn/pixiv/v1/?type=illust"
@@ -99,10 +115,6 @@ public class PictureController {
         }
         ;
         return pictureList;
-    }
-
-    public void downPictureList(List<Picture> pictureList) throws Exception {
-        DownloadUtil.get().downloadPicturesByList(pictureList);
     }
 
 
