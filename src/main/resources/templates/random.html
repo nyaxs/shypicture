@@ -10,9 +10,9 @@
     <div class="topNav">
 
         <ul class="navList" title="Navigation">
-            <li><a href="/index">随机</a></li>
+            <li><a href="/random">随机</a></li>
             <li><a href="/daily">每日</a></li>
-            <li><a href="/weekly">每周</a></li>
+            <li><a href="/weekly">每日</a></li>
             <li><a href="/monthly">每月</a></li>
             <li><a href="/hotTags">热门标签</a></li>
             <li><a href="/r18">让我康康!</a></li>
@@ -26,25 +26,27 @@
         </ul>
 
     </div>
-    <div class="content" th:each="picture :${pictures}">
+
+    <div class="content">
 
         <div class="pictureShow">
-            <div class="pictureArea"><a th:href="@{/index}"><img width="706px" th:src="@{|${picture.pictureId}.jpg|}"
-                                                                 src=""/></a></div>
+            <div class="pictureArea"><a th:href="@{/random}"><img width="706px" th:src="@{|${picture.id}.jpg|}" src=""/></a>
+            </div>
         </div>
 
 
         <div class="pictureInfo">
             <div>
                 <ul class="picInfoList">
-                    <li><a th:href="@{/welcome}" th:text="|作者名字:${picture.authorName}|">userName</a></li>
-                    <li><a th:href="@{/welcome}" th:text="|作者ID:${picture.authorId}|">userId</a></li>
-                    <li><a th:href="@{/welcome}" th:text="|标题:${picture.pictureTitle}">pictureTitle</a></li>
-                    <li><a th:href="@{/welcome}" th:text="|作品ID:${picture.pictureId}|">pictureId</a></li>
+                    <li><a th:href="@{/welcome}" th:text="|作者名字:${author.name}|">userName</a></li>
+                    <li><a th:href="@{/welcome}" th:text="|作者ID:${author.id}|">userId</a></li>
+                    <li><a th:href="@{/welcome}" th:text="|标题:${picture.title}">pictureTitle</a></li>
+                    <li><a th:href="@{/welcome}" th:text="|作品ID:${picture.id}|">pictureId</a></li>
                     <li><a th:href="@{/welcome}" th:text="|投稿时间:${picture.createdTime}|">pictureTime</a></li>
-                    <li><a th:href="@{/welcome}" th:text="|赞:${picture.scoredCount}|">zanCount</a></li>
-                    <li><a th:href="@{/welcome}" th:text="|收藏:${picture.collectCount}|">favoriteCount</a></li>
-                    <li><a th:href="@{/welcome}" th:text="|浏览:${picture.viewCount}|">viewCount</a></li>
+                    <li><a th:href="@{/welcome}" th:text="|赞:${stats.scoredCount}|">zanCount</a></li>
+                    <li><a th:href="@{/welcome}" th:text="|收藏:${favoritedCount.jsonMemberPublic}|">favoriteCount</a>
+                    </li>
+                    <li><a th:href="@{/welcome}" th:text="|浏览:${stats.viewsCount}|">viewCount</a></li>
                     <li><a th:href="@{/welcome}" th:each="tag :${picture.tags}"
                            th:text="'#'+${tag}+'&nbsp;&nbsp;'">tag</a></li>
                 </ul>
@@ -54,7 +56,6 @@
 
 
     </div>
-
 </div>
 </body>
 </html>

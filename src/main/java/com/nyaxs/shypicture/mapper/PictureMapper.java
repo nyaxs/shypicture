@@ -3,9 +3,11 @@ package com.nyaxs.shypicture.mapper;
 import com.nyaxs.shypicture.bean.Picture;
 import com.nyaxs.shypicture.bean.PictureData;
 import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 @Mapper
 public interface PictureMapper {
     //插入多条语句

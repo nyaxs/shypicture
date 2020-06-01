@@ -6,7 +6,7 @@ public class SearchCondition {
 
     public SearchCondition() {
         this.rankPage = 1;
-        this.rankPerPage = 10;
+        this.rankPerPage = 5;
 
         this.type = "rank";
         this.content = "illust";
@@ -17,7 +17,7 @@ public class SearchCondition {
         this.order = "desc";
         this.period = "all";
         this.searchPage = 1;
-        this.searchPerPage = 10;
+        this.searchPerPage = 5;
 
     }
 
