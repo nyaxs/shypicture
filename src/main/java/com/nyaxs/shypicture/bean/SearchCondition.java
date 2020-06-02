@@ -1,7 +1,10 @@
 package com.nyaxs.shypicture.bean;
 
+import lombok.Data;
+
 import java.time.LocalDate;
 
+@Data
 public class SearchCondition {
 
     public SearchCondition() {
@@ -70,115 +73,5 @@ public class SearchCondition {
     https://api.imjad.cn/pixiv/v1/?type=tags 返回所有热门标签
      */
 
-    public String getType() {
-        return type;
-    }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public int getPictureId() {
-        return pictureId;
-    }
-
-    public void setPictureId(int pictureId) {
-        this.pictureId = pictureId;
-    }
-
-    public int getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(int authorId) {
-        this.authorId = authorId;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getRankMode() {
-        return rankMode;
-    }
-
-    public void setRankMode(String rankMode) {
-        this.rankMode = rankMode;
-    }
-
-    public int getRankPage() {
-        return rankPage;
-    }
-
-    public void setRankPage(int rankPage) {
-        this.rankPage = rankPage;
-    }
-
-    public int getRankPerPage() {
-        return rankPerPage;
-    }
-
-    public void setRankPerPage(int rankPerPage) {
-        this.rankPerPage = rankPerPage;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getWord() {
-        return word;
-    }
-
-    public void setWord(String word) {
-        this.word = word;
-    }
-
-    public String getSearchMode() {
-        return searchMode;
-    }
-
-    public void setSearchMode(String searchMode) {
-        this.searchMode = searchMode;
-    }
-
-    public String getOrder() {
-        return order;
-    }
-
-    public void setOrder(String order) {
-        this.order = order;
-    }
-
-    public String getPeriod() {
-        return period;
-    }
-
-    public void setPeriod(String period) {
-        this.period = period;
-    }
-
-    public int getSearchPage() {
-        return searchPage;
-    }
-
-    public void setSearchPage(int searchPage) {
-        this.searchPage = searchPage;
-    }
-
-    public int getSearchPerPage() {
-        return searchPerPage;
-    }
-
-    public void setSearchPerPage(int searchPerPage) {
-        this.searchPerPage = searchPerPage;
-    }
 }

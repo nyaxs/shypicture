@@ -15,10 +15,12 @@ import com.nyaxs.shypicture.mapper.PictureMapper;
 import com.nyaxs.shypicture.util.AsyncDownload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -342,22 +344,17 @@ public class IndexController {
         return "random";
     }
 
-     /*  @GetMapping("/random")
-    public String random(Model model) throws Exception {
+
+    @Scheduled(cron = "0 3 9 * * *")
+    public List<PictureData> scheduledDownloadDailyRank() throws Exception {
+        log.info("开始定时任务，现在的时间是：" + LocalDate.now());
         SearchCondition condition = new SearchCondition();
         condition.setRankMode("daily");
-        log.info("访问/"+condition.getRankMode());
-        condition.setRankPerPage(5);
-        log.info("设置搜索条件为perpage="+condition.getRankPerPage()+";rankMode="+condition.getRankMode());
-
-        log.info("开始执行getAndDownPicture(Condetion)", getAndDownPicture(condition));
-        List<PictureData> pictureList = getAndDownPicture(condition);
-        log.info("下载完毕,获得返回的pictureList" + pictureList.toString());
-        model.addAttribute("pictures", pictureList);
-        log.info("添加对象到model", model);
-        log.info("返回random视图");
-        return "random";
-    }*/
+        condition.setRankPerPage(10);
+        log.info("condition条件是：" + condition.toString());
+        List<PictureData> pictureDataList = getAndDownLoadWithCondition(condition);
+        return pictureDataList;
+    }
 
 
 }
