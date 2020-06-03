@@ -3,16 +3,14 @@ package com.nyaxs.shypicture.controller;
 import com.nyaxs.shypicture.bean.Picture;
 import com.nyaxs.shypicture.bean.PictureData;
 import com.nyaxs.shypicture.bean.SearchCondition;
-import com.nyaxs.shypicture.bean.jsonpojo.picture.FavoritedCount;
 import com.nyaxs.shypicture.bean.jsonpojo.picture.ResponseItem;
-import com.nyaxs.shypicture.bean.jsonpojo.picture.Stats;
-import com.nyaxs.shypicture.bean.jsonpojo.picture.User;
 import com.nyaxs.shypicture.bean.jsonpojo.picturelists.ImageUrls;
 import com.nyaxs.shypicture.bean.jsonpojo.picturelists.ResponsePictures;
 import com.nyaxs.shypicture.bean.jsonpojo.picturelists.Work;
 import com.nyaxs.shypicture.bean.jsonpojo.picturelists.WorksItem;
 import com.nyaxs.shypicture.mapper.PictureMapper;
 import com.nyaxs.shypicture.util.AsyncDownload;
+import com.nyaxs.shypicture.util.ConvertToPictureData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -194,21 +192,16 @@ public class IndexController {
     }
 
     @GetMapping("/random")
-    public String index(Model model) throws Exception {
+    public String random(Model model) throws Exception {
         PictureController pictureController = new PictureController();
         List<Picture> pictures = pictureMapper.findRandomPicture(1);
         Picture picture = pictures.get(0);
         ResponseItem item = pictureController.getPictureById(picture.getId());
-        User user = item.getUser();
-        Stats stats = item.getStats();
-        FavoritedCount favoritedCount = stats.getFavoritedCount();
-        List<String> tags = item.getTags();
-        model.addAttribute("tags", tags);
-        model.addAttribute("picture", item);
-        model.addAttribute("author", user);
-        model.addAttribute("stats", stats);
-        model.addAttribute("favoritedCount", favoritedCount);
-        return "random";
+        PictureData pictureData = ConvertToPictureData.fromResponseItem(item);
+        List<PictureData> pictureDataList = new ArrayList<>();
+        pictureDataList.add(pictureData);
+        model.addAttribute("pictures", pictureDataList);
+        return "index";
     }
 
 

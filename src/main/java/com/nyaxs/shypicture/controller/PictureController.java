@@ -37,6 +37,7 @@ public class PictureController {
 
 
     public ResponseItem getPictureById(int id) throws Exception {
+        log.info("进入getPictureById(int id)");
         String url = "https://api.imjad.cn/pixiv/v1/?type=illust"
                 + "&id=" + id;
         ObjectMapper objectMapper = new ObjectMapper();
@@ -45,8 +46,6 @@ public class PictureController {
 
         ResponsePicture responsePicture = objectMapper.readValue(new URL(url), ResponsePicture.class);
         ResponseItem item = responsePicture.getResponse().get(0);
-
-
         return item;
     }
 
