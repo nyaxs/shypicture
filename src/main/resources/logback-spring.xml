@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <!-- 输出地址 -->
+    <!-- 输出地址 value="D:/logs"-->
+<!--    <property name="logger.path" value="/nyaxs/logs"/>-->
     <property name="logger.path" value="D:/logs"/>
-
     <!-- 彩色日志 -->
     <!-- 彩色日志依赖的渲染类 -->
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>

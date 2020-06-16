@@ -29,7 +29,9 @@ public class AsyncDownload {
 
     @Async("taskExecutor")
     public Future<String> asyncDownloadOnePicture1(String url, int id) throws Exception {
+        //String downPath = "/nyaxs/pictures";
         String downPath = "D:\\springbootProject\\resource\\pictures\\";
+
         InputStream inputStream = null;
         OutputStream outputStream = null;
         File file = null;

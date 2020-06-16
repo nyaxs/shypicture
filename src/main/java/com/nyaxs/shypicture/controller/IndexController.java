@@ -209,7 +209,7 @@ public class IndexController {
     public String daily(Model model) throws Exception {
         SearchCondition condition = new SearchCondition();
         condition.setRankMode("daily");
-        condition.setRankPerPage(5);
+        condition.setRankPerPage(2);
         model.addAttribute("pictures", getAndDownLoadWithCondition(condition));
         log.info("添加对象到model", model);
         log.info("返回index视图");
@@ -220,7 +220,7 @@ public class IndexController {
     public String weekly(Model model) throws Exception {
         SearchCondition condition = new SearchCondition();
         condition.setRankMode("weekly");
-        condition.setRankPerPage(5);
+        condition.setRankPerPage(2);
         model.addAttribute("pictures", getAndDownLoadWithCondition(condition));
         log.info("添加对象到model", model);
         log.info("返回index视图");
@@ -231,7 +231,7 @@ public class IndexController {
     public String monthly(Model model) throws Exception {
         SearchCondition condition = new SearchCondition();
         condition.setRankMode("monthly");
-        condition.setRankPerPage(5);
+        condition.setRankPerPage(2);
         model.addAttribute("pictures", getAndDownLoadWithCondition(condition));
         log.info("添加对象到model", model);
         log.info("返回index视图");
